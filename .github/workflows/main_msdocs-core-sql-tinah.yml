@@ -11,7 +11,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: 'msdocs-core-sql-tinah'
-
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -55,7 +55,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: .net-app
-
       - uses: azure/login@v1
         with:
           creds: |
@@ -66,14 +65,13 @@ jobs:
               "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
             }
 
-      - name: Deploy to Azure Web App
+      - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'msdocs-core-sql-tinah'
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
           slot-name: 'Production'
-          # publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A6C04623756D4194A8761725A26F6CE2 }}
-          package: .
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
       - name: logout
         run: |
